@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_db
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=TuContraseña123!
+      - MSSQL_PID=Developer
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  api:
+    build: .
+    container_name: fastapi_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - sqlserver
+    environment:
+      - DB_SERVER=sqlserver
+      - DB_NAME=TiendaDB
+      - DB_USER=sa
+      - DB_PASSWORD=TuContraseña123!
+
+volumes:
+  sql_data:
